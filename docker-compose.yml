@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  crowdsec:
+    image: crowdsecurity/crowdsec
+    container_name: crowdsec
+    restart: unless-stopped
+    environment:
+      #this is the list of collections we want to install
+      #https://hub.crowdsec.net/author/crowdsecurity/collections/traefik
+      COLLECTIONS: "crowdsecurity/traefik"
+      GID: "${GID-1000}"
+    volumes:
+      - ./crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
+      # So that CrowdSec can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - crowdsec-db:/var/lib/crowdsec/data/
+      - crowdsec-config:/etc/crowdsec/
+
+volumes:
+  crowdsec-db:
+  crowdsec-config:
+
